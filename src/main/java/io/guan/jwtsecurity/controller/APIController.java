@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ import java.util.List;
 public class APIController {
     private AuthenticationManager authenticationManager;
     private AppUserDetailsService userDetailsService;
+    private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
 
     @GetMapping("/admin")
@@ -39,6 +41,7 @@ public class APIController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
+        registrationRequest.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         userDetailsService.saveUser(userDetailsService.toUser(registrationRequest));
 
         return ResponseEntity.ok(RegistrationResponse.builder()
