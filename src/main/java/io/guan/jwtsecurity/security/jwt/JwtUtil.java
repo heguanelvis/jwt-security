@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -21,10 +24,6 @@ public class JwtUtil {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
-    }
-
-    public Collection<? extends GrantedAuthority> extractAuthorities(String token) {
-        return (Collection<? extends GrantedAuthority>) extractAllClaims(token).get("authorities");
     }
 
     public Date extractExpiration(String token) {

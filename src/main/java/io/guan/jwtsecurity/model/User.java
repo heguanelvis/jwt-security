@@ -4,23 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "auth_user")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
-    List<Authority> authorities;
+    @CollectionTable(name = "auth_authority", joinColumns = @JoinColumn(name = "user_id"))
+    private Set<Authority> authorities;
+
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
     private String username;
@@ -28,7 +30,7 @@ public class User implements UserDetails {
     private String email;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Set<Authority> getAuthorities() {
         return authorities;
     }
 
