@@ -7,6 +7,7 @@ import io.guan.jwtsecurity.security.registration.*;
 import io.guan.jwtsecurity.service.AppUserDetailsService;
 import io.guan.jwtsecurity.view.UserView;
 import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,8 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
@@ -39,12 +43,19 @@ public class APIController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
+        if (hasValidationErrors(registrationRequest) ||
+                userDetailsService.hasUsername(registrationRequest.getUsername()) ||
+                userDetailsService.hasEmail(registrationRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(RegistrationResponse.builder()
+                    .message("Error when trying to create your account...").build());
+        }
+
         registrationRequest.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         userDetailsService.saveUser(userDetailsService.toUser(registrationRequest));
 
         return ResponseEntity.ok(RegistrationResponse.builder()
-                .message("Your user is created successfully").build());
+                .message("Your account is created successfully!").build());
     }
 
     @PostMapping("/checkusername")
@@ -78,5 +89,11 @@ public class APIController {
         final String jwt = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(AuthenticationResponse.builder().jwt(jwt).build());
+    }
+
+    private boolean hasValidationErrors(Object object) {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<Object>> violations = validator.validate(object);
+        return CollectionUtils.isNotEmpty(violations);
     }
 }
