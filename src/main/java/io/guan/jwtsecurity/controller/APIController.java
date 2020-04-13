@@ -3,8 +3,7 @@ package io.guan.jwtsecurity.controller;
 import io.guan.jwtsecurity.security.authentication.AuthenticationRequest;
 import io.guan.jwtsecurity.security.authentication.AuthenticationResponse;
 import io.guan.jwtsecurity.security.jwt.JwtUtil;
-import io.guan.jwtsecurity.security.registration.RegistrationRequest;
-import io.guan.jwtsecurity.security.registration.RegistrationResponse;
+import io.guan.jwtsecurity.security.registration.*;
 import io.guan.jwtsecurity.service.AppUserDetailsService;
 import io.guan.jwtsecurity.view.UserView;
 import lombok.AllArgsConstructor;
@@ -46,6 +45,22 @@ public class APIController {
 
         return ResponseEntity.ok(RegistrationResponse.builder()
                 .message("Your user is created successfully").build());
+    }
+
+    @PostMapping("/checkusername")
+    public ResponseEntity<?> checkUsernameAvailability(@RequestBody UsernameAvailabilityRequest usernameAvailabilityRequest) {
+        boolean isUsernameAvailable = userDetailsService.hasUsername(usernameAvailabilityRequest.getUsername());
+
+        return ResponseEntity.ok(UsernameAvailabilityResponse.builder()
+                .isUsernameAvailable(isUsernameAvailable).build());
+    }
+
+    @PostMapping("/checkemail")
+    public ResponseEntity<?> checkEmailAvailability(@RequestBody EmailAvailabilityRequest emailAvailabilityRequest) {
+        boolean isEmailAvailable = userDetailsService.hasEmail(emailAvailabilityRequest.getEmail());
+
+        return ResponseEntity.ok(EmailAvailabilityResponse.builder()
+                .isEmailAvailable(isEmailAvailable).build());
     }
 
     @PostMapping("/authenticate")

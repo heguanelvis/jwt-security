@@ -27,6 +27,14 @@ public class AppUserDetailsService implements UserDetailsService {
         return optionalUser.orElseThrow(() -> new UsernameNotFoundException("Username not found!"));
     }
 
+    public boolean hasUsername(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    public boolean hasEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public User saveUser(User user) {
         return userRepository.save(user);
     }
