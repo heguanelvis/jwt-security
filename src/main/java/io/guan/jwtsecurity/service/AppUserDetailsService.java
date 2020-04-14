@@ -28,11 +28,11 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     public boolean hasUsername(String username) {
-        return userRepository.findByUsername(username).isPresent();
+        return !userRepository.findByUsername(username).isPresent();
     }
 
     public boolean hasEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return !userRepository.findByEmail(email).isPresent();
     }
 
     public User saveUser(User user) {

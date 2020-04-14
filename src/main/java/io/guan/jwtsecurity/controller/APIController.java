@@ -60,18 +60,18 @@ public class APIController {
 
     @PostMapping("/checkusername")
     public ResponseEntity<?> checkUsernameAvailability(@RequestBody UsernameAvailabilityRequest usernameAvailabilityRequest) {
-        boolean isUsernameAvailable = userDetailsService.hasUsername(usernameAvailabilityRequest.getUsername());
+        boolean usernameAvailable = userDetailsService.hasUsername(usernameAvailabilityRequest.getUsername());
 
         return ResponseEntity.ok(UsernameAvailabilityResponse.builder()
-                .isUsernameAvailable(isUsernameAvailable).build());
+                .usernameAvailable(usernameAvailable).build());
     }
 
     @PostMapping("/checkemail")
     public ResponseEntity<?> checkEmailAvailability(@RequestBody EmailAvailabilityRequest emailAvailabilityRequest) {
-        boolean isEmailAvailable = userDetailsService.hasEmail(emailAvailabilityRequest.getEmail());
+        boolean emailAvailable = userDetailsService.hasEmail(emailAvailabilityRequest.getEmail());
 
         return ResponseEntity.ok(EmailAvailabilityResponse.builder()
-                .isEmailAvailable(isEmailAvailable).build());
+                .emailAvailable(emailAvailable).build());
     }
 
     @PostMapping("/authenticate")

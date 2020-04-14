@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @Builder
 public class EmailAvailabilityResponse {
-    private boolean isEmailAvailable;
+    private boolean emailAvailable;
 }
