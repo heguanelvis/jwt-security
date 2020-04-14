@@ -44,6 +44,7 @@ public class APIController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationRequest registrationRequest) {
+        System.out.println(registrationRequest);
         if (hasValidationErrors(registrationRequest) ||
                 userDetailsService.hasUsername(registrationRequest.getUsername()) ||
                 userDetailsService.hasEmail(registrationRequest.getEmail())) {
